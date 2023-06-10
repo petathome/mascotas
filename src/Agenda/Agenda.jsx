@@ -1,130 +1,88 @@
-import React from 'react';
-import { useState, useEffect } from "react";
-// import Swal from 'sweetalert2';
 import { Rutas } from '../Rutas/Rutas';
-import Swal from 'sweetalert2';
+import React, { useState } from 'react';
+import { Formulario } from './Formulario';
+import './Agenda.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+
 export function Agenda() {
-    const [inputDia, setInputDia] = useState(null);
-    const [inputHora, setInputHora] = useState(null);
-    const [inputNombre, setInput] = useState(null);
-    const [inputApellido, setInputApellido] = useState(null);
-    const [inputCorreo, setInputCorreo] = useState(null);
-    const [errores, setErrores] = useState({});
+    const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
-    const [envioDeFormulario, setEnvioDeFormulario] = useState(false);
-    const [reservas, setReservas] = useState(null);
-    const [carga, setCarga] = useState(true);
+    const handleMostrarFormulario = () => {
+        setMostrarFormulario(true);
+    };
 
+    const handleCloseFormulario = () => {
+        setMostrarFormulario(false);
+    };
 
-    useEffect(function(){
-        if (Object.keys(errores).length==0){
-            Swal.fire(
-                'Servicio adquirido',
-                'click me',
-                'success'
-            )
+    let servicios = [
+        {
+            id: 1,
+            nombre: "Peluqueria",
+            descripcion: "Nuestra peluquería para mascotas ofrece servicios de aseo especializados, cuidando el bienestar y la belleza de tu compañero peludo. ¡Hazlos lucir radiantes!",
+            foto: "https://firebasestorage.googleapis.com/v0/b/mascotas-93570.appspot.com/o/empleados%2Fempleado1.jpg?alt=media&token=c10530a2-803f-4c08-ae03-333d7107b7df",
+            valor: 15000
+        },
+        {
+            id: 2,
+            nombre: "Veterinaria",
+            descripcion: "Ofrecemos consultas veterinarias profesionales y compasivas para el cuidado óptimo de tus mascotas. ¡Tu tranquilidad es nuestra prioridad!",
+            foto: "https://firebasestorage.googleapis.com/v0/b/mascotas-93570.appspot.com/o/empleados%2Fempleado2.jpg?alt=media&token=e0c7d94f-3046-4b20-92c6-2766e521a1a1",
+            valor: 20000
+        },
+        {
+            id: 3,
+            nombre: "Guarderia",
+            descripcion: "Nuestra guardería para mascotas brinda un ambiente seguro y divertido, con cuidadores dedicados, donde tus peludos amigos se sienten como en casa.",
+            foto: "https://firebasestorage.googleapis.com/v0/b/mascotas-93570.appspot.com/o/empleados%2Fempleado3.jpg?alt=media&token=2b2ec192-55b0-45f3-b4c4-48ea408523f3",
+            valor: 40000
         }
-
-        if (envioDeFormulario) {
-            Swal.fire({
-                icon: "error",
-                title: "xd",
-                text: "campos vacios"
-            })
-        }
-    })
-
-    function validarFormulario(evento) {
-        evento.preventDefault()
-        let listaErrores = []
-        if (!inputNombre) {
-            listaErrores.nombre = "El nombre esta vacio."
-        }
-        if (!inputApellido) {
-            listaErrores.apellido = "El apellido esta vacio."
-        }
-        if (!inputCorreo) {
-            listaErrores.correo = "El correo esta vacio."
-        }
-        if (!inputDia) {
-            listaErrores.dia = "El dia esta vacio."
-        }
-        if (!inputHora) {
-            listaErrores.hora = "El hora esta vacia."
-        }
-        setErrores(listaErrores);
-        setEnvioDeFormulario(true);
-    }
-
+    ];
 
     return (
-        <div className="d-flex justify-content-center align-items-center">
-            <div>
-                <h1>Formulario de Agendamiento</h1>
-                <form onSubmit={validarFormulario}>
-                    
-                    <div className="form-group">
-                        <label htmlFor="date" className="col-1 col-form-label">Dia:</label>
-                        <div className="col-5">
-                            <div className="input-group date" id="datepicker">
-                                <input 
-                                    type="date" 
-                                    className="form-control" 
-                                    id="date"
-                                    onChange={function(evento){setInputDia(evento.target.value)}}/>
+        <div className="container mt-5">
+            <div className="row row-cols-1 row-cols-md-3">
+                {servicios.map(function (servicio) {
+                    return (
+                        <div className="col" key={servicio.id}>
+                            <div className="card h-100 shadow text-center">
+                                <h1 className="name">{servicio.nombre}</h1>
+                                <br />
+                                <h1 style={{ fontSize: '20px' }}>{servicio.descripcion}</h1>
+                                <img
+                                    src={servicio.foto}
+                                    alt="empleadoX"
+                                    className="img-fluid w-100"
+                                />
+                                <p>Valor: {servicio.valor}</p>
+                                <button
+                                    value={servicio.id}
+                                    onClick={handleMostrarFormulario}
+                                    className="btn btn-success"
+                                >
+                                    Agendar
+                                </button>
                             </div>
                         </div>
-
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="date" className="col-1 col-form-label">Hora:</label>
-                        <select 
-                            defaultValue={"DEFAULT"}
-                            className ="form-select" 
-                            aria-label="Default select example"
-                            onChange={function(evento){setInputHora(evento.target.value)}}>
-
-                            <option selected>Seleccione la hora del servicio</option>
-                            <option value="1">10 am</option>
-                            <option value="2">1 pm</option>
-                            <option value="3">5 pm</option>
-                        </select>
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="nombre">Nombre:</label>
-                        <input 
-                            type="text" 
-                            className="form-control form-control-sm" 
-                            id="nombre" 
-                            name="nombre"  
-                            onChange={function(evento){setInputNombre(evento.target.value)}}/>
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="apellido">Apellido:</label>
-                        <input 
-                            type="text" 
-                            className="form-control form-control-sm" 
-                            id="apellido" 
-                            name="apellido"
-                            onChange={function(evento){setInputApellido(evento.target.value)}}  />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="correo">Correo:</label>
-                        <input 
-                            type="email" 
-                            className="form-control form-control-sm" 
-                            id="correo" 
-                            name="correo"
-                            onChange={function(evento){setInputCorreo(evento.target.value)}}  />
-                    </div>
-
-                    <button type='submit' className='btn btn-primary w-100'>AGENDAR</button>
-                </form>
+                    );
+                })}
             </div>
+            {mostrarFormulario ? (
+                <>
+                    <div>
+                        <button className="close-button" onClick={handleCloseFormulario}>
+                            <FontAwesomeIcon icon={faTimes} />
+                        </button>
+                    </div>
+                    <div className="overlay">
+                        <Formulario />
+                    </div>
+                </>
+            ) : (
+                <><div>sssssssssss</div></>
+            )}
+
         </div>
     );
 }
